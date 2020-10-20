@@ -17,20 +17,24 @@ current_id = 0
 # access csv file with read method
 with open('tasks.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
+    current_id = 0
     for row in reader:
         print(row)
-        current_id = row['id']
+        current_id = int(row['id'])
 
 # register new task
-with open('tasks.csv', 'w', newline='') as csvfile:
+with open('tasks.csv', 'a', newline='') as csvfile:
     fieldnames = ['id', 'tasks', 'registerd', 'due']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    # writer.writeheader()
 
-    writer.writeheader()
+    # task parameters
+    # input form
+    new_task = input('新しいタスク: ')
+    due_time = input('期限: ')
+    # automatically filled form
     new_id = current_id + 1
-    new_task = '新しいタスクテスト'
     registered_time = datetime.utcnow().isoformat(timespec='milliseconds')
-    due_time = '2020-11-10'
     writer.writerow({
         'id': new_id,
         'tasks': new_task,
@@ -38,3 +42,6 @@ with open('tasks.csv', 'w', newline='') as csvfile:
         'due': due_time
     })
 
+    # announce successfully registerd
+    print('>>> 新しいタスクが登録されました')
+    print('{}(期日: {})'.format(new_task, due_time))
