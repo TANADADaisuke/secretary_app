@@ -50,20 +50,20 @@ def show_each_task(task):
 def show_all_tasks():
     """\
     Show all tasks registered in csv file.
-    Returns: current_id\
+    Returns: sequence_id\
     """
-    current_id = 0
+    sequence_id = 0
     # access csv file with read method
     with open('tasks.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
-        current_id = 0
+        sequence_id = 0
         for row in reader:
             # print(row)
             show_each_task(row)
-            current_id = int(row['id'])
-    return current_id
+            sequence_id = int(row['id'])
+    return sequence_id
 
-def register_new_task(current_id):
+def register_new_task(sequence_id, new_task):
     """Register new task."""
     with open('tasks.csv', 'a', newline='') as csvfile:
         fieldnames = ['id', 'tasks', 'registerd', 'due', 'status']
@@ -72,10 +72,10 @@ def register_new_task(current_id):
 
         # task parameters
         # input form
-        new_task = input('新しいタスク: ')
+        new_task = new_task
         due_time = due_time_valid_input()
         # automatically filled form
-        new_id = current_id + 1
+        new_id = sequence_id + 1
         registered_time = datetime.utcnow()
         # set task status
         new_time = datetime.utcnow()
@@ -103,10 +103,30 @@ def register_new_task(current_id):
         # announce successfully registerd
         announce_task_registration(new_task, due_time)
 
+def select_prompt_mode(sequence_id):
+    """\
+    If the user input new task, return task register function.
+    Else(hit the enter without any input), change mode.\
+    """
+    print('(Press Enter to change mode)')
+    new_task = input('新しいタスク: ')
+    if new_task:
+        register_new_task(sequence_id, new_task)
+        sequence_id = show_all_tasks()
+        return select_prompt_mode(sequence_id)
+    else:
+        return select_prompt_mode(sequence_id)
+
 def main():
+    """Main roop for app."""
+    # Say hello to the user
     greetings()
-    current_id = show_all_tasks()
-    register_new_task(current_id)
+    
+    # Show all tasks and get newest task id
+    sequence_id = show_all_tasks()
+
+    # select prompt mode
+    select_prompt_mode(sequence_id)
 
 
 if __name__ == '__main__':
