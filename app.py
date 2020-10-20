@@ -18,7 +18,7 @@ def greetings(username=username):
 def announce_task_registration(task, due):
     """Announce that the task is successfully registered."""
     print('>>> 新しいタスクが登録されました')
-    print('{}(期限: {})'.format(task, due))
+    print('{}(期限: {})\n'.format(task, due))
 
 def format_datetime(date_time):
     """Return str type datetime."""
