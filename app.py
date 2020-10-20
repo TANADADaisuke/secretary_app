@@ -8,6 +8,11 @@ def print_pause(text):
     print(text)
     time.sleep(0.2)
 
+def announce_task_registration(task, due):
+    print('>>> 新しいタスクが登録されました')
+    print('{}(期日: {})'.format(task, due))
+
+
 # greetings
 print_pause('How do you do, today?')
 print_pause('Think how you perform, not what to do.')
@@ -43,5 +48,4 @@ with open('tasks.csv', 'a', newline='') as csvfile:
     })
 
     # announce successfully registerd
-    print('>>> 新しいタスクが登録されました')
-    print('{}(期日: {})'.format(new_task, due_time))
+    announce_task_registration(new_task, due_time)
