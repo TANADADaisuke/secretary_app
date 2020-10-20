@@ -9,11 +9,28 @@ def print_pause(text):
     time.sleep(0.2)
 
 def announce_task_registration(task, due):
+    """Announce that the task is successfully registered."""
     print('>>> 新しいタスクが登録されました')
-    print('{}(期日: {})'.format(task, due))
+    print('{}(期限: {})'.format(task, due))
 
 def format_datetime(date_time):
+    """Return str type datetime."""
     return date_time.isoformat(timespec='milliseconds')
+
+def due_time_valid_input():
+    """\
+    Check if the user input is valid compared with datetime class type.
+    We expect the following user input.
+    2020-01-01\
+    """
+    due_time = input('期限: ')
+    try:
+        datetime.fromisoformat(due_time)
+        return due_time
+    except ValueError:
+        print('Invalid date type. We expect the following date type input.'
+            '\n>>> 2020-01-01')
+        return due_time_valid_input()
 
 
 # greetings
@@ -39,7 +56,7 @@ with open('tasks.csv', 'a', newline='') as csvfile:
     # task parameters
     # input form
     new_task = input('新しいタスク: ')
-    due_time = input('期限: ')
+    due_time = due_time_valid_input()
     # automatically filled form
     new_id = current_id + 1
     registered_time = datetime.utcnow()
@@ -54,6 +71,9 @@ with open('tasks.csv', 'a', newline='') as csvfile:
         status = 'yellow'
     else:
         status = 'red'
+    if new_time > datetime.fromisoformat(due_time):
+        status = 'red'
+
     # write row
     writer.writerow({
         'id': new_id,
