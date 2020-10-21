@@ -111,8 +111,18 @@ class Task(object):
         # TODO: you cannnot use csv as database.
         #       you need to load all data in python local and rewrite csv
         #       to save the change.
-        pass
+        with open(self.csvfile, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
+            writer.writeheader()
 
+            for row_id, task in self.data.items():
+                print(type(task))
+                task[self.fieldnames[0]] = int(row_id)
+                if int(row_id) == int(task_id):
+                    task[self.fieldnames[4]] = 'done'
+                    print(task)
+                writer.writerow(task)
+ 
     def deleat_task(self):
         pass
 
@@ -152,9 +162,9 @@ def select_prompt_mode(Task):
     else:
         task_id = input('ステータスを更新するidを入力してください: ')
         if task_id:
-            update_task_status(task_id)
-            sequence_id = show_all_tasks()
-            return select_prompt_mode(sequence_id)
+            Task.update_task_status(task_id)
+            Task.show_all_tasks()
+            return select_prompt_mode(Task)
         else:
             prompt = input('プログラムを終了しますか?:[y/n] ')
             if prompt.lower() in ['y', 'ye', 'yes']:
