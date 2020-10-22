@@ -203,22 +203,11 @@ def main_roop(Task):
     else:
         # status update mode
         # Prompt for asking task id to update status
-        task_id = input('ステータスを更新するidを入力してください: ')
-        if task_id:
-            # check if the value is integer
-            try:
-                task_id = int(task_id)
-                # update status: green/yellow/red -> done or done -> green
-                Task.update_task_status(task_id)
-                # go back to main roop
-                return main_roop(Task)
-            except ValueError:
-                # ask again which task id to update
-                # TODO: refactor to match this process
-                pass
-        
-        # delete mode
+        prompt_status = status_update_prompt(Task)
+        if prompt_status:
+            return main_roop(Task)
         else:
+            # delete mode
             # Prompt for asking task id to delete
             task_id = input('削除するタスクのidを入力してください: ')
             if task_id:
@@ -268,7 +257,30 @@ def new_task_prompt(Task):
             # ask new task again
             return new_task_prompt(Task)
     else:
-        # Go to status update mode
+        # return False
+        return False
+
+def status_update_prompt(Task):
+    """
+    Prompt for asking task_id to update status
+    
+    Returns:if the user input task_id, return True.
+            If the user hit enter without any input, return False.
+    """
+    task_id = input('ステータスを更新するidを入力してください: ')
+    if task_id:
+        # check if the value is integer
+        try:
+            task_id = int(task_id)
+            # update status: green/yellow/red -> done or done -> green
+            Task.update_task_status(task_id)
+            # return True
+            return True
+        except ValueError:
+            # ask again which task id to update
+            return status_update_prompt(Task)
+    else:
+        # return False
         return False
 
 def main():
