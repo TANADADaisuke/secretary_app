@@ -51,10 +51,8 @@ class Task(object):
         """Register new task"""
         with open(self.csvfile, 'a', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
+            
             # parameters
-            # new_task = new_task
-            # due_time = due_time_valid_input()
-            # automatically filled form
             task_id = self.sequence_id + 1
             registered_time = datetime.utcnow()
             # set task status
@@ -147,43 +145,130 @@ def date_formatted_valid_input():
             '\n>>> 2020-01-01')
         return date_formatted_valid_input()
 
-def select_prompt_mode(Task):
+def main_roop(Task):
     """\
-    If the user input new task, return task register function.
-    Else(hit the enter without any input), change mode.\
+    Define the process of this application. Algorithm is shown below.
+
+    *** Program Algorithm ***
+    Show all tasks: TODO paginate it.
+     |
+    Prompt for asking new task.
+     |
+     |-- If user input a task, ask the due time. Then, ask user whether register it,
+     |   and register that task.
+     |   ** Task_register function should imediately reload data dictionally.
+     |    |
+     |    |-- Go back to main roop.
+     |
+     |-- If there is no input, go to status update mode. Ask which task id to update.
+          |
+          |-- If user input a value, check if the value is integer.
+          |    |
+          |    |-- If the value is integer, pass the id to status_update function.
+          |    |   Then go back to main roop
+          |    |   ** Status_updata function should return status code which represent
+          |    |      whether the id does exist in csv file and the updata process is 
+          |    |      indeed succeeded.
+          |    |
+          |    |-- If the value is not integer, ask again which task id to update.
+          |
+          |-- If there is no input, go to task delete mode. Ask which id to delete.
+               |
+               |-- If user input a value, check if the value is interger.
+               |    |
+               |    |-- If the value is integer, pass it to task_delete function.
+               |    |   ** Task_delete fucntion should return status code which 
+               |    |      represent whether the id does exist in csv file and the 
+               |    |      delete process is indeed succeeded.
+               |    |
+               |    |-- If the value is not integer, ask again which id to delete.
+               |
+               |-- If there is no input, go to process finish mode.
+                    |
+                    |-- If user press 'y', end the process.
+                    |
+                    |-- Otherwise, go back to main roop.
+    *** End of the Algorithm ***
     """
+    # Show all tasks
+    Task.show_all_tasks()
+
+    # Explain how to change the prompt mode
     print('(Press Enter to change mode)')
+
+    # Prompt for asking new task
     new_task = input('新しいタスク: ')
     if new_task:
         due_time = date_formatted_valid_input()
-        Task.create_new_task(new_task, due_time)
-        Task.show_all_tasks()
-        return select_prompt_mode(Task)
+
+        # make sure to register that task
+        prompt = input(
+            '>>> 新しいタスクを登録しますか?\n'
+            '{}(期限: {})\n[y/n]: '.format(new_task, due_time)
+            )
+        if prompt.lower() in ['y', 'ye', 'yes']:
+            # Register the task
+            Task.create_new_task(new_task, due_time)
+            # Go back to main roop
+            return main_roop(Task)
+        else:
+            # ask again new task
+            # TODO: refactor to match this process
+            pass
+
+    # status update mode
     else:
+        # Prompt for asking task id to update status
         task_id = input('ステータスを更新するidを入力してください: ')
         if task_id:
-            Task.update_task_status(task_id)
-            Task.show_all_tasks()
-            return select_prompt_mode(Task)
+            # check if the value is integer
+            try:
+                task_id = int(task_id)
+                # update status: green/yellow/red -> done or done -> green
+                Task.update_task_status(task_id)
+                # go back to main roop
+                return main_roop(Task)
+            except ValueError:
+                # ask again which task id to update
+                # TODO: refactor to match this process
+                pass
+        
+        # delete mode
         else:
-            prompt = input('プログラムを終了しますか?:[y/n] ')
-            if prompt.lower() in ['y', 'ye', 'yes']:
-                return None
-            return select_prompt_mode(Task)
+            # Prompt for asking task id to delete
+            task_id = input('削除するタスクのidを入力してください: ')
+            if task_id:
+                # check if the value is integer
+                try:
+                    task_id = int(task_id)
+                    # delete the task
+                    # TODO: prepare this class function
+                    Task.delete_task(task_id)
+                    # go back to main roop
+                    return main_roop(Task)
+                except ValueError:
+                    # ask again which task id to delete
+                    # TODO: refactor to match this process
+                    pass
+            
+            # process finish mode
+            else:
+                prompt = input('プログラムを終了しますか?:[y/n] ')
+                if prompt.lower() in ['y', 'ye', 'yes']:
+                    return None
+                # go back to main roop
+                return main_roop(Task)
 
 def main():
-    """Main roop for app."""
+    """Call application."""
     # Say hello to the user
     greetings()
     
     # load tasks from csv datafile
     tasks = Task('tasks.csv')
 
-    # Show all tasks
-    tasks.show_all_tasks()
-
-    # select prompt mode
-    select_prompt_mode(tasks)
+    # main root
+    main_roop(tasks)
 
 
 if __name__ == '__main__':
