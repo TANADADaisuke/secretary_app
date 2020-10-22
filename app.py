@@ -28,7 +28,6 @@ class Task(object):
     def __init__(self, csvfile):
         self.csvfile = csvfile
         self.fieldnames = ['id', 'tasks', 'registered', 'due', 'status']
-        self.data = collections.defaultdict(dict)
         self.load_data()
 
     def load_data(self):
@@ -38,6 +37,7 @@ class Task(object):
         Retunrs:
             dict: key -> id, value -> task parameters
         """
+        self.data = collections.defaultdict(dict)
         with open(self.csvfile, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             self.sequence_id = 0
@@ -121,8 +121,22 @@ class Task(object):
                     print(task)
                 writer.writerow(task)
  
-    def deleat_task(self):
-        pass
+    def delete_task(self, task_id):
+        """Delete task of given id"""
+        with open(self.csvfile, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
+            writer.writeheader()
+
+            for row_id, task in self.data.items():
+                task['id'] = int(row_id)
+                print('deleteing')
+                if int(row_id) == int(task_id):
+                    continue
+                writer.writerow(task)
+    
+        # load data after the task is deleted
+        self.load_data() 
+            
 
     def announce_task_registration(self, task, due):
         """Announce that the task is successfully registered."""
