@@ -197,27 +197,11 @@ def main_roop(Task):
     print('(Press Enter to change mode)')
 
     # Prompt for asking new task
-    new_task = input('新しいタスク: ')
-    if new_task:
-        due_time = date_formatted_valid_input()
-
-        # make sure to register that task
-        prompt = input(
-            '>>> 新しいタスクを登録しますか?\n'
-            '{}(期限: {})\n[y/n]: '.format(new_task, due_time)
-            )
-        if prompt.lower() in ['y', 'ye', 'yes']:
-            # Register the task
-            Task.create_new_task(new_task, due_time)
-            # Go back to main roop
-            return main_roop(Task)
-        else:
-            # ask again new task
-            # TODO: refactor to match this process
-            pass
-
-    # status update mode
+    prompt_status = new_task_prompt(Task)
+    if prompt_status:
+        return main_roop(Task)
     else:
+        # status update mode
         # Prompt for asking task id to update status
         task_id = input('ステータスを更新するidを入力してください: ')
         if task_id:
@@ -258,6 +242,34 @@ def main_roop(Task):
                     return None
                 # go back to main roop
                 return main_roop(Task)
+
+def new_task_prompt(Task):
+    """
+    Prompt for asking new task.
+    
+    Returns: if the user input a task and register it, return True.
+             if the user hit enter without any task input, return False.
+    """
+    new_task = input('新しいタスク: ')
+    if new_task:
+        due_time = date_formatted_valid_input()
+
+        # make sure to register that task
+        prompt = input(
+            '>>> 新しいタスクを登録しますか?\n'
+            '{}(期限: {})\n[y/n]: '.format(new_task, due_time)
+            )
+        if prompt.lower() in ['y', 'ye', 'yes']:
+            # Register the task
+            Task.create_new_task(new_task, due_time)
+            # return True
+            return True
+        else:
+            # ask new task again
+            return new_task_prompt(Task)
+    else:
+        # Go to status update mode
+        return False
 
 def main():
     """Call application."""
