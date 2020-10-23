@@ -118,6 +118,7 @@ class Task(object):
 
         self.data is already updated through csv writing process.
         """
+        finished_time = datetime.utcnow()
         with open(self.csvfile, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
             writer.writeheader()
@@ -125,6 +126,7 @@ class Task(object):
             for row_id, task in self.data.items():
                 if int(row_id) == int(task_id):
                     task['status'] = 'done'
+                    task['finished'] = format_datetime(finished_time)
                 writer.writerow(task)
  
     def delete_task(self, task_id):
