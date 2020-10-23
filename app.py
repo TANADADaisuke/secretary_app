@@ -5,7 +5,7 @@ import time
 from datetime import datetime, timedelta
 
 # initial parameters
-username = 'Daisuke'
+username = 'Superuser'
 
 
 def print_pause(text):
@@ -106,24 +106,25 @@ class Task(object):
         for task_id in self.data:
             self.show_each_task(task_id)
 
-    def update_task_parameters(self):
+    def update_task_parameters(self, task_id):
         pass
 
     def update_task_status(self, task_id):
-        """Update task status of given id."""
-        # TODO: you cannnot use csv as database.
-        #       you need to load all data in python local and rewrite csv
-        #       to save the change.
+        """
+        Update task status of given id.
+        You cannnot use csv as database.
+        You need to load all data in python local and rewrite csv
+        to save the change.
+
+        self.data is already updated through csv writing process.
+        """
         with open(self.csvfile, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
             writer.writeheader()
 
             for row_id, task in self.data.items():
-                print(type(task))
-                # task['id'] = int(row_id)
                 if int(row_id) == int(task_id):
                     task['status'] = 'done'
-                    print(task)
                 writer.writerow(task)
  
     def delete_task(self, task_id):
@@ -134,7 +135,6 @@ class Task(object):
 
             for row_id, task in self.data.items():
                 task['id'] = int(row_id)
-                print('deleteing')
                 if int(row_id) == int(task_id):
                     continue
                 writer.writerow(task)
