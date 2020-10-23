@@ -226,23 +226,11 @@ def main_roop(Task):
         else:
             # delete mode
             # Prompt for asking task id to delete
-            task_id = input('削除するタスクのidを入力してください: ')
-            if task_id:
-                # check if the value is integer
-                try:
-                    task_id = int(task_id)
-                    # delete the task
-                    # TODO: prepare this class function
-                    Task.delete_task(task_id)
-                    # go back to main roop
-                    return main_roop(Task)
-                except ValueError:
-                    # ask again which task id to delete
-                    # TODO: refactor to match this process
-                    pass
-            
-            # process finish mode
+            prompt_status = delete_prompt(Task)
+            if prompt_status:
+                return main_roop(Task)
             else:
+                # process finish mode
                 prompt = input('プログラムを終了しますか?:[y/n] ')
                 if prompt.lower() in ['y', 'ye', 'yes']:
                     return None
@@ -296,6 +284,29 @@ def status_update_prompt(Task):
         except ValueError:
             # ask again which task id to update
             return status_update_prompt(Task)
+    else:
+        # return False
+        return False
+
+def delete_prompt(Task):
+    """
+    Prompt for asking which task id to delete.
+    
+    Returns: If the user input task_id, return True.
+             If the user hit enter without any input, return False.
+    """
+    task_id = input('削除するタスクのidを入力してください: ')
+    if task_id:
+        # check if the value is integer
+        try:
+            task_id = int(task_id)
+            # delete the task
+            Task.delete_task(task_id)
+            # return True
+            return True
+        except ValueError:
+            # ask again which task id to delete
+            return delete_prompt(Task)
     else:
         # return False
         return False
