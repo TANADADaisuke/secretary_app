@@ -98,8 +98,8 @@ class Task(object):
         """\
         Show all tasks registered in csv file.
         """
-        for task_id in range(len(self.data)):
-            self.show_each_task(task_id + 1)
+        for task_id in self.data:
+            self.show_each_task(task_id)
 
     def update_task_parameters(self):
         pass
