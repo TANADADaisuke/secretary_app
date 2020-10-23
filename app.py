@@ -231,11 +231,12 @@ def main_roop(Task):
                 return main_roop(Task)
             else:
                 # process finish mode
-                prompt = input('プログラムを終了しますか?:[y/n] ')
-                if prompt.lower() in ['y', 'ye', 'yes']:
+                # Prompt for asking whether finish the program or not
+                prompt_status = finish_prompt(Task)
+                if prompt_status:
                     return None
-                # go back to main roop
-                return main_roop(Task)
+                else:
+                    return main_roop(Task)
 
 def new_task_prompt(Task):
     """
@@ -307,6 +308,20 @@ def delete_prompt(Task):
         except ValueError:
             # ask again which task id to delete
             return delete_prompt(Task)
+    else:
+        # return False
+        return False
+
+def finish_prompt(Task):
+    """
+    Prompt for asking whether finish the program or not.
+    
+    Returns: If the user input 'y', return True.
+             If the user input other characters, return False.
+    """
+    prompt = input('プログラムを終了しますか?:[y/n] ')
+    if prompt.lower() in ['y', 'ye', 'yes']:
+        return True
     else:
         # return False
         return False
