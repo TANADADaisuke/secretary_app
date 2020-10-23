@@ -169,43 +169,43 @@ def main_roop(Task):
     *** Program Algorithm ***
     Show all tasks: TODO paginate it.
      |
-    Prompt for asking new task.
+    Show the way how to change prompt mode. If the user hit enter without any
+    input, prompt mode will be changed.
      |
-     |-- If user input a task, ask the due time. Then, ask user whether register it,
-     |   and register that task.
-     |   ** Task_register function should imediately reload data dictionally.
-     |    |
-     |    |-- Go back to main roop.
+    1. Prompt for asking new task. If new task is input, go back to the top.
      |
-     |-- If there is no input, go to status update mode. Ask which task id to update.
-          |
-          |-- If user input a value, check if the value is integer.
-          |    |
-          |    |-- If the value is integer, pass the id to status_update function.
-          |    |   Then go back to main roop
-          |    |   ** Status_updata function should return status code which represent
-          |    |      whether the id does exist in csv file and the updata process is 
-          |    |      indeed succeeded.
-          |    |
-          |    |-- If the value is not integer, ask again which task id to update.
-          |
-          |-- If there is no input, go to task delete mode. Ask which id to delete.
-               |
-               |-- If user input a value, check if the value is interger.
-               |    |
-               |    |-- If the value is integer, pass it to task_delete function.
-               |    |   ** Task_delete fucntion should return status code which 
-               |    |      represent whether the id does exist in csv file and the 
-               |    |      delete process is indeed succeeded.
-               |    |
-               |    |-- If the value is not integer, ask again which id to delete.
-               |
-               |-- If there is no input, go to process finish mode.
-                    |
-                    |-- If user press 'y', end the process.
-                    |
-                    |-- Otherwise, go back to main roop.
+    2. Prompt for asking which task id to update. After status update, 
+     | go back to the top.
+     |
+    3. Prompt for asking which id to delete. After delete, go back to the top.
+     |
+    4. Prompt for asking process finish.
     *** End of the Algorithm ***
+
+    Detail of the each prompt
+    1. Prompt for asking new task
+      - If user input a task, ask the due time. Then, ask user whether register it,
+        and register that task.
+      - ** Task_register function will imediately reload data dictionary.
+    2. Prompt for asking which task id to update status
+      - If user input a value, check if the value is integer.
+      - If the value is integer, pass the id to status_update function.
+        Then go back to main roop.
+        ** Status_updata function should return status code which represent
+           whether the id does exist in csv file and the updata process is 
+           indeed succeeded.
+      - If the value is not integer, ask again which task id to update.
+    3. Prompt for asking which task id to delete
+      - If user input a value, check if the value is interger.
+      - If the value is integer, pass it to task_delete function.
+        Then, go back to main roop.
+        ** Task_delete fucntion should return status code which 
+           represent whether the id does exist in csv file and the 
+           delete process is indeed succeeded.
+      - If the value is not integer, ask again which id to delete.
+    4. Prompt for asking finish the process
+      - If user press 'y', end the process.
+      - Otherwise, go back to main roop.
     """
     # Show all tasks
     Task.show_all_tasks()
