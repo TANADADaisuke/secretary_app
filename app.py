@@ -115,11 +115,14 @@ class Task(object):
 
             for row_id, task in self.data.items():
                 print(type(task))
-                task[self.fieldnames[0]] = int(row_id)
+                task['id'] = int(row_id)
                 if int(row_id) == int(task_id):
-                    task[self.fieldnames[4]] = 'done'
+                    task['status'] = 'done'
                     print(task)
                 writer.writerow(task)
+        
+        # load data after the task status is updated
+        self.load_data()
  
     def delete_task(self, task_id):
         """Delete task of given id"""
