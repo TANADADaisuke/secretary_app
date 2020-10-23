@@ -334,7 +334,7 @@ def main():
     # load tasks from csv datafile
     tasks = Task('tasks.csv')
 
-    # main root
+    # main roop
     main_roop(tasks)
 
 
