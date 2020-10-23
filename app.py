@@ -27,7 +27,7 @@ class Task(object):
     """tasks"""
     def __init__(self, csvfile):
         self.csvfile = csvfile
-        self.fieldnames = ['id', 'tasks', 'registered', 'due', 'status']
+        self.fieldnames = ['id', 'tasks', 'registered', 'due', 'status', 'finished']
         self.data = collections.defaultdict(dict)
         self.load_data()
 
