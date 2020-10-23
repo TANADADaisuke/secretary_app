@@ -28,6 +28,7 @@ class Task(object):
     def __init__(self, csvfile):
         self.csvfile = csvfile
         self.fieldnames = ['id', 'tasks', 'registered', 'due', 'status']
+        self.data = collections.defaultdict(dict)
         self.load_data()
 
     def load_data(self):
@@ -36,13 +37,14 @@ class Task(object):
 
         Retunrs:
             dict: key -> id, value -> task parameters
+            ** id is also included in task parameters.
         """
-        self.data = collections.defaultdict(dict)
         with open(self.csvfile, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             self.sequence_id = 0
             for row in reader:
                 self.sequence_id = int(row['id'])
+                self.data[self.sequence_id]['id'] = self.sequence_id
                 for column in self.fieldnames[1:]:
                     self.data[self.sequence_id][column] = row[column]
         return self.data
@@ -68,24 +70,27 @@ class Task(object):
                 status = 'red'
             if new_time > datetime.fromisoformat(due):
                 status = 'red'
-
-            # write row
-            writer.writerow({
+            
+            # task parameters
+            new_task = {
                 'id': task_id,
                 'tasks': task,
                 'registered': format_datetime(registered_time),
                 'due': due,
                 'status': status
-            })
+            }
+
+            # write row
+            writer.writerow(new_task)
         
-        # update sequence_id
+        # update self.sequence_id
         self.sequence_id = task_id
+
+        # update self.data
+        self.data[task_id] = new_task
 
         # announce successfully registered
         self.announce_task_registration(task, due)
-
-        # load data after new task is registered
-        self.load_data()
 
     def show_each_task(self, task_id):
         """Show each task according to task id."""
@@ -115,14 +120,11 @@ class Task(object):
 
             for row_id, task in self.data.items():
                 print(type(task))
-                task['id'] = int(row_id)
+                # task['id'] = int(row_id)
                 if int(row_id) == int(task_id):
                     task['status'] = 'done'
                     print(task)
                 writer.writerow(task)
-        
-        # load data after the task status is updated
-        self.load_data()
  
     def delete_task(self, task_id):
         """Delete task of given id"""
@@ -137,9 +139,8 @@ class Task(object):
                     continue
                 writer.writerow(task)
     
-        # load data after the task is deleted
-        self.load_data() 
-            
+        # update self.data
+        self.data.pop(int(task_id))
 
     def announce_task_registration(self, task, due):
         """Announce that the task is successfully registered."""
